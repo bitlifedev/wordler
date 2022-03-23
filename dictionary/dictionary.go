@@ -3,48 +3,70 @@ package dictionary
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 )
 
-type Word []struct {
+type Words struct {
+	words []word
+	hash  [26]int
+}
+
+type word struct {
 	word   string
-	length int
+	hash   [26]int
 	active bool
 }
 
-func LoadDictionary() {
+func open(file string) (*os.File, error) {
 	// Open our jsonFile
-	dicFile, err := os.Open("assets/test.dic")
-	// if we os.Open returns an error then handle it
+	contents, err := os.Open(file)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Can't open file, %v", file)
 	}
+	defer func(contents *os.File) {
+		if err != nil {
+			log.Fatalf("Can't close file, %v", file)
+		}
+	}(contents)
 	fmt.Println("Successfully Opened dictionary")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer dicFile.Close()
-	// read our opened xmlFile as a byte array.
+	return contents, nil
+}
 
-	scanner := bufio.NewScanner(dicFile)
+func Load(dictionary string) (Words, error) {
+
+	// read our opened xmlFile as a byte array.
+	var WS Words
+	file, _ := open(dictionary)
+	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
+		var W word
+		W.word = scanner.Text()
+		W.hash = hashString(W.word)
+		W.active = true
+		WS.words = append(WS.words, W)
+		for i := range W.hash {
+			WS.hash[i] = WS.hash[i] + W.hash[i]
+		}
 
+	}
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
+	}
+	return WS, nil
+}
+
+func hashString(S string) [26]int {
+
+	var myIntArray [26]int
+	for i := range S {
+		s := strings.ToUpper(string(S[i]))
+		index := s[0] - 65
+		myIntArray[index]++
 	}
 
-	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'users' which we defined above
-	//json.Unmarshal(byteValue, &users)
-	// we iterate through every user within our users array and
-	// print out the user Type, their name, and their facebook url
-	// as just an example
-	//for i := 0; i < len(users.Users); i++ {
-	//	fmt.Println("user Type: " + users.Users[i].Type)
-	//	fmt.Println("user Age: " + strconv.Itoa(users.Users[i].Age))
-	//	fmt.Println("user Name: " + users.Users[i].Name)
-	//	fmt.Println("Facebook Url: " + users.Users[i].Social.Facebook)
-	//}
-
+	return myIntArray
 }
