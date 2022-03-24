@@ -20,7 +20,7 @@ func main() {
 	fmt.Println(wordPool)
 
 	secret := selectSecretWord(wordPool)
-	fmt.Println("Secret Wordle is: ", secret)
+	fmt.Println("Secret Wordle is: ", secret.Word)
 
 	//Calculate probability in wordPool  and prune unneeded words
 	//Select best guess
