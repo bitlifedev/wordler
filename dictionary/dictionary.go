@@ -9,14 +9,13 @@ import (
 )
 
 type Words struct {
-	words []word
-	hash  [26]int
+	Words []Word
+	Hash  [26]int
 }
 
-type word struct {
-	word   string
-	hash   []int
-	active bool
+type Word struct {
+	Word string
+	Hash []int
 }
 
 func open(file string) (*os.File, error) {
@@ -44,13 +43,12 @@ func Load(dictionary string) (Words, error) {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		var W word
-		W.word = scanner.Text()
-		W.hash = hashString(W.word)
-		W.active = true
-		WS.words = append(WS.words, W)
-		for i := range W.hash {
-			WS.hash[i] = WS.hash[i] + W.hash[i]
+		var W Word
+		W.Word = scanner.Text()
+		W.Hash = hashString(W.Word)
+		WS.Words = append(WS.Words, W)
+		for i := range W.Hash {
+			WS.Hash[i] = WS.Hash[i] + W.Hash[i]
 		}
 
 	}
