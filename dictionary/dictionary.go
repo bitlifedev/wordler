@@ -10,12 +10,12 @@ import (
 
 type Words struct {
 	words []word
-	hash  [26]int
+	hash  []int
 }
 
 type word struct {
 	word   string
-	hash   [26]int
+	hash   []int
 	active bool
 }
 
@@ -23,11 +23,11 @@ func open(file string) (*os.File, error) {
 	// Open our jsonFile
 	contents, err := os.Open(file)
 	if err != nil {
-		log.Fatalf("Can't open file, %v", file)
+		return nil, err
 	}
 	defer func(contents *os.File) {
 		if err != nil {
-			log.Fatalf("Can't close file, %v", file)
+			log.Fatal(err)
 		}
 	}(contents)
 	fmt.Println("Successfully Opened dictionary")
@@ -53,19 +53,23 @@ func Load(dictionary string) (Words, error) {
 
 	}
 	if err := scanner.Err(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("Error occured scanning: %v", err)
 	}
 	return WS, nil
 }
 
-func hashString(S string) [26]int {
+func hashString(S string) []int {
 
-	var myIntArray [26]int
+	empty := [26]int{}
+	myIntArray := empty[0:25]
+
 	for i := range S {
 		s := strings.ToUpper(string(S[i]))
 		index := s[0] - 65
-		myIntArray[index]++
+		if index < 25 {
+			myIntArray[index]++
+		}
+
 	}
 
 	return myIntArray
