@@ -11,7 +11,7 @@ func init() {
 
 func main() {
 	fmt.Println("Starting Wordler")
-	wordPool, err := dictionary.Load("../assets/test.dic")
+	wordPool, err := dictionary.Load("assets/test.dic")
 	if err != nil {
 		fmt.Println(err)
 	}

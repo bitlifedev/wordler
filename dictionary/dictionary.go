@@ -10,7 +10,7 @@ import (
 
 type Words struct {
 	words []word
-	hash  []int
+	hash  [26]int
 }
 
 type word struct {
@@ -23,10 +23,12 @@ func open(file string) (*os.File, error) {
 	// Open our jsonFile
 	contents, err := os.Open(file)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer func(contents *os.File) {
 		if err != nil {
+			fmt.Println(err)
 			log.Fatal(err)
 		}
 	}(contents)
