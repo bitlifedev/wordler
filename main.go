@@ -13,22 +13,22 @@ func init() {
 
 func main() {
 	fmt.Println("Starting Wordler")
-	wordPool, err := dictionary.Load("assets/test.dic")
+	dictionary, err := dictionary.Load("assets/test.dic")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(wordPool)
+	fmt.Println(dictionary)
 
-	secret := selectSecretWord(wordPool)
-	fmt.Println("Secret Wordle is: ", secret.Word)
+	secret := selectSecretWord(dictionary)
+	fmt.Println("Secret Wordle is: ", secret)
 
 	//Calculate probability in wordPool  and prune unneeded words
 	//Select best guess
 }
 
-func selectSecretWord(in dictionary.Words) dictionary.Word {
+func selectSecretWord(in dictionary.Dictionary) string {
 	rand.Seed(time.Now().UnixNano())
-	min := 0
-	max := len(in.Words)
-	return in.Words[rand.Intn(max-min+1)+min]
+	index := rand.Intn(len(in.Words) - 1)
+	return in.Words[index].Value
+
 }

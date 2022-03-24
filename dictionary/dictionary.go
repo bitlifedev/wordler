@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-type Words struct {
+type Dictionary struct {
 	Words []Word
-	Hash  [26]int
+	Map   map[string]int
 }
 
 type Word struct {
-	Word string
-	Hash []int
+	Value string
+	Map   map[string]int
 }
 
 func open(file string) (*os.File, error) {
@@ -35,42 +35,36 @@ func open(file string) (*os.File, error) {
 	return contents, nil
 }
 
-func Load(dictionary string) (Words, error) {
+func Load(file string) (Dictionary, error) {
 
-	// read our opened xmlFile as a byte array.
-	var WS Words
-	file, _ := open(dictionary)
-	scanner := bufio.NewScanner(file)
+	var dictionary Dictionary
+	dictionary.Map = make(map[string]int)
+	content, _ := open(file)
+	scanner := bufio.NewScanner(content)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		var W Word
-		W.Word = scanner.Text()
-		W.Hash = hashString(W.Word)
-		WS.Words = append(WS.Words, W)
-		for i := range W.Hash {
-			WS.Hash[i] = WS.Hash[i] + W.Hash[i]
+		var w Word
+		var s = scanner.Text()
+		w.Value = s
+		w.Map = mapString(s)
+		dictionary.Words = append(dictionary.Words, w)
+		for i := range w.Map {
+			dictionary.Map[i] = dictionary.Map[i] + w.Map[i]
 		}
-
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("Error occured scanning: %v", err)
 	}
-	return WS, nil
+	return dictionary, nil
 }
 
-func hashString(S string) []int {
+func mapString(S string) map[string]int {
 
-	empty := [26]int{}
-	myIntArray := empty[0:25]
-
+	m := make(map[string]int)
 	for i := range S {
 		s := strings.ToUpper(string(S[i]))
-		index := s[0] - 65
-		if index < 25 {
-			myIntArray[index]++
-		}
+		m[s] = m[s] + 1
 
 	}
-
-	return myIntArray
+	return m
 }

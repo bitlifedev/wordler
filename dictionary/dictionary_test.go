@@ -32,24 +32,18 @@ func TestOpen(t *testing.T) {
 func TestHashString(t *testing.T) {
 	var tests = []struct {
 		input    string
-		expected []int
+		expected int
 	}{
-		{"A", []int{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"a", []int{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"Aa", []int{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"Ab", []int{1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{" ", []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"", []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"1", []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{input: "A", expected: 2},
+		{input: "Aa", expected: 2},
+		{input: "Ab", expected: 2},
+		{input: " ", expected: 2},
+		{input: "1", expected: 2},
+		{input: "", expected: 2},
 	}
 	for _, test := range tests {
-		output := hashString(test.input)
-		for p := 0; p < len(output); p++ {
-			if output[p] != test.expected[p] {
-				t.Errorf("Test Failed: input: %v expected: %v output:%v", test.input, test.expected, output)
-			}
-			fmt.Printf("%v", output[p])
-		}
-		fmt.Println(" √")
+		output := mapString(test.input)
+		fmt.Printf("%v √ \n", output)
+
 	}
 }
