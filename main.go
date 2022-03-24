@@ -13,13 +13,13 @@ func init() {
 
 func main() {
 	fmt.Println("Starting Wordler")
-	dictionary, err := dictionary.Load("assets/test.dic")
+	dict, err := dictionary.Load("assets/test.dic")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(dictionary)
+	fmt.Println(dict)
 
-	secret := selectSecretWord(dictionary)
+	secret := selectSecretWord(dict)
 	fmt.Println("Secret Wordle is: ", secret)
 
 	//Calculate probability in wordPool  and prune unneeded words
