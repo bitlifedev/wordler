@@ -7,8 +7,26 @@ import (
 	"testing"
 )
 
-func TestOpen(t *testing.T) {
+func TestLoad(t *testing.T) {
 
+	var tests = []struct {
+		input    string
+		expected Dictionary
+		err      string
+	}{
+		{"../assets/test.dic", Dictionary{}, ""},
+	}
+	for _, test := range tests {
+		received, err := Load(test.input)
+		if err != nil {
+		}
+		if &received == nil {
+			t.Errorf("Empty Dictionary")
+		}
+	}
+}
+
+func TestOpen(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected *os.File
@@ -17,7 +35,6 @@ func TestOpen(t *testing.T) {
 		{"../assets/fail.dic", nil, "open ../assets/fail.dic: no such file or directory"},
 		{"../assets/test.dic", nil, ""},
 	}
-
 	for _, test := range tests {
 		_, err := open(test.input)
 		if err != nil {
@@ -44,6 +61,5 @@ func TestHashString(t *testing.T) {
 	for _, test := range tests {
 		output := mapString(test.input)
 		fmt.Printf("%v √ \n", output)
-
 	}
 }

@@ -19,7 +19,6 @@ type Word struct {
 }
 
 func open(file string) (*os.File, error) {
-	// Open our jsonFile
 	contents, err := os.Open(file)
 	if err != nil {
 		fmt.Println(err)
@@ -59,12 +58,10 @@ func Load(file string) (Dictionary, error) {
 }
 
 func mapString(S string) map[string]int {
-
 	m := make(map[string]int)
 	for i := range S {
 		s := strings.ToUpper(string(S[i]))
 		m[s] = m[s] + 1
-
 	}
 	return m
 }
