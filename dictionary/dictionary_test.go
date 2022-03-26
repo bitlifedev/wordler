@@ -5,16 +5,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+	"wordler/words"
 )
 
 func TestLoad(t *testing.T) {
 
 	var tests = []struct {
 		input    string
-		expected Dictionary
+		expected words.WordlerDictionary
 		err      string
 	}{
-		{"../assets/test.dic", Dictionary{}, ""},
+		{"../assets/test.dic", words.WordlerDictionary{}, ""},
 	}
 	for _, test := range tests {
 		received, err := Load(test.input)

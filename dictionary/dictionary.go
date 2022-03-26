@@ -6,21 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+	"wordler/words"
 )
-
-type Dictionary struct {
-	Words []Word
-	Map   map[string]Stats
-}
-
-type Word struct {
-	Value string
-	Map   map[string]Stats
-}
-type Stats struct {
-	Count int
-	P     float64
-}
 
 func open(file string) (*os.File, error) {
 	contents, err := os.Open(file)
@@ -38,34 +25,46 @@ func open(file string) (*os.File, error) {
 	return contents, nil
 }
 
-func Load(file string) (Dictionary, error) {
+func Load(file string) (*words.WordlerDictionary, error) {
 
-	var dictionary Dictionary
-	dictionary.Map = make(map[string]Stats)
 	content, _ := open(file)
 	scanner := bufio.NewScanner(content)
 	scanner.Split(bufio.ScanWords)
+	var dict = new(words.WordlerDictionary)
+	dict.Map = map[string]words.Stats{}
 	for scanner.Scan() {
-		var w Word
-		var s = scanner.Text()
-		w.Value = s
-		w.Map = mapString(s)
-		dictionary.Words = append(dictionary.Words, w)
-		for i := range w.Map {
-			dictionary.Map[i] = Stats{dictionary.Map[i].Count + w.Map[i].Count, -1}
-		}
+		w := new(words.Word)
+		w.Value = scanner.Text()
+		w.Map = mapString(w.Value)
+		updateWordlerDictionary(dict, w)
 	}
+
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("Error occured scanning: %v", err)
+		return nil, err
 	}
-	return dictionary, nil
+	return dict, nil
 }
 
-func mapString(S string) map[string]Stats {
-	m := make(map[string]Stats)
+func updateWordlerDictionary(dict *words.WordlerDictionary, w *words.Word) {
+	dict.Words = append(dict.Words, *w)
+	var stats words.Stats
+	stats.Count = 0
+	for s := range w.Map {
+		stats.Count = dict.Map[s].Count + w.Map[s].Count
+		dict.Map[s] = stats
+	}
+}
+
+func mapString(S string) map[string]words.Stats {
+	//m := make(map[string]Stats)
+	var m = map[string]words.Stats{}
+	var stats words.Stats
+	stats.Count = 0
 	for i := range S {
 		s := strings.ToUpper(string(S[i]))
-		m[s] = Stats{m[s].Count + 1, (float64(m[s].Count + 1)) / float64(len(S))}
+		stats.Count = m[s].Count + 1
+		m[s] = stats
 	}
 	return m
 }
